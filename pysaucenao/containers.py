@@ -10,6 +10,7 @@ from pysaucenao.errors import SauceNaoException
 TYPE_GENERIC    = 'generic'
 TYPE_PIXIV      = 'pixiv'
 TYPE_BOORU      = 'booru'
+TYPE_TWITTER    = 'twitter'
 TYPE_VIDEO      = 'video'
 TYPE_ANIME      = 'anime'
 TYPE_MANGA      = 'manga'
@@ -324,11 +325,14 @@ class PixivSource(GenericSource):
 
     def _parse_data(self, data: dict):
         super()._parse_data(data)
-        self.author_url = f"https://www.pixiv.net/member.php?id={data['member_id']}"
+        self.member_id : int = data['member_id']
+        self.pixiv_id : int = data['pixiv_id']
+        self.author_url = f"https://www.pixiv.net/users/{self.member_id}"
+        self.url = f"https://www.pixiv.net/artworks/{self.pixiv_id}"
 
     def __repr__(self):
         rep = reprlib.Repr()
-        return f"<PixivSource(title={rep.repr(self.title)}, author={rep.repr(self.author_name)}, pixiv_id={rep.repr(self.data['member_id'])})>"
+        return f"<PixivSource(title={rep.repr(self.title)}, pixiv_id={rep.repr(self.pixiv_id)}, author={rep.repr(self.author_name)}, member_id={rep.repr(self.member_id)})>"
 
 
 class BooruSource(GenericSource):
@@ -369,7 +373,7 @@ class BooruSource(GenericSource):
 
     def __repr__(self):
         rep = reprlib.Repr()
-        return f"<GenericSource(title={rep.repr(self.title)}, author={rep.repr(self.author_name)}, source='{self.index}')>"
+        return f"<BooruSource(title={rep.repr(self.title)}, author={rep.repr(self.author_name)}, danbooru_id='{self.danbooru_id}', getbooru_id='{self.gelbooru_id}')>"
 
 
 class TwitterSource(GenericSource):
@@ -390,7 +394,7 @@ class TwitterSource(GenericSource):
 
     @property
     def type(self):
-        return TYPE_BOORU
+        return TYPE_TWITTER
 
     def _parse_data(self, data: dict):
         super()._parse_data(data)
@@ -404,7 +408,7 @@ class TwitterSource(GenericSource):
 
     def __repr__(self):
         rep = reprlib.Repr()
-        return f"<GenericSource(title={rep.repr(self.title)}, author={rep.repr(self.author_name)}, source='{self.index}')>"
+        return f"<TwitterSource(title={rep.repr(self.title)}, author={rep.repr(self.author_name)}, tweet_id='{self.tweet_id}')>"
 
 
 class VideoSource(GenericSource):
